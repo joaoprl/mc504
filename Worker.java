@@ -61,6 +61,8 @@ public class Worker {
 			if(engineFactory.hasAEngine(request.getEngineType()))
 				workSite.addPart(engineFactory.takeProduct(request.getEngineType()));
 			else engineFactory.newRequest(request.getEngineType());
+			
+			if(workSite.carIsComplete()) workSite.clearWorkSite();
 		}
 	}
 	

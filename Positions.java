@@ -60,7 +60,7 @@ public class Positions {
 	public static Point getWorkSitePosition(int number)
 	{
 		Point scheduler = getSchedulerPosition();
-		return new Point(7 + 7 * number + scheduler.x, scheduler.y);
+		return new Point(6 + 8 * number + scheduler.x, scheduler.y);
 	}
 	
 	/**

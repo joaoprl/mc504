@@ -31,7 +31,8 @@ public class WorkSite {
 	public void addPart(Tire tire)
 	{
 		this.tire = tire;
-		tire.setPosition(Positions.getWorkSitePosition(ID));
+		Point position = Positions.getWorkSitePosition(ID);
+		tire.setPosition(new Point(position.x + 1, position.y + 1));
 	}
 	
 	/**
@@ -40,7 +41,8 @@ public class WorkSite {
 	public void addPart(Engine engine)
 	{
 		this.engine = engine;
-		engine.setPosition(Positions.getWorkSitePosition(ID));
+		Point position = Positions.getWorkSitePosition(ID);
+		engine.setPosition(new Point(position.x + 5, position.y + 1));
 	}
 	
 	/**
