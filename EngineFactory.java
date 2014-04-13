@@ -1,18 +1,30 @@
 import java.awt.Point;
 
-public class EngineFactory {
+public class EngineFactory implements Runnable {
+	public void run()
+	{
+		while(true)
+		{
+			this.Update();
+			this.Draw();
+		}
+	}
+	
 	Point position; // Posição da fábrica
 	Engine [] inventory; // Estoque da fábrica
+	Draw draw;
 	
 	/**
 	 * Cria uma nova fábrica
+	 * @param draw Local de impressão
 	 */
-	public EngineFactory()
+	public EngineFactory(Draw draw)
 	{
 		this.position = Positions.getEngineFactoryPosition();
 		this.inventory = new Engine[Constants.inventoryLength];
 		for(int i = 0; i < inventory.length; i++)
 			inventory[i] = null;
+		this.draw = draw;
 	}
 
 	/**
@@ -79,7 +91,7 @@ public class EngineFactory {
 	 * Imprime peças no inventário
 	 * @param draw Imprime peças no inventário
 	 */
-	public void Draw(Draw draw)
+	public void Draw()
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) inventory[i].Draw(draw);

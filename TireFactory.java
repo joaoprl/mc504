@@ -1,18 +1,30 @@
 import java.awt.Point;
 
-public class TireFactory {
+public class TireFactory implements Runnable {
+	public void run()
+	{
+		while(true)
+		{
+			this.Update();
+			this.Draw();
+		}
+	}
+	
 	Point position; // Posição da fábrica
 	Tire [] inventory; // Estoque da fábrica
+	Draw draw;
 	
 	/**
 	 * Cria uma nova fábrica
+	 * @param draw Local de impressão
 	 */
-	public TireFactory()
+	public TireFactory(Draw draw)
 	{
 		this.position = Positions.getTireFactoryPosition();
 		this.inventory = new Tire[Constants.inventoryLength];
 		for(int i = 0; i < inventory.length; i++)
 			inventory[i] = null;
+		this.draw = draw;
 	}
 	
 	/**
@@ -79,7 +91,7 @@ public class TireFactory {
 	 * Imprime peças no inventário
 	 * @param draw Imprime peças no inventário
 	 */
-	public void Draw(Draw draw)
+	public void Draw()
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) inventory[i].Draw(draw);

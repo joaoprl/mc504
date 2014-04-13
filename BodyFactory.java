@@ -1,18 +1,30 @@
 import java.awt.Point;
 
-public class BodyFactory  {
+public class BodyFactory implements Runnable{
+	public void run()
+	{
+		while(true)
+		{
+			this.Update();
+			this.Draw();
+		}
+	}
+	
 	Point position; // Posição da fábrica
 	Body [] inventory; // Estoque da fábrica
+	Draw draw;
 	
 	/**
 	 * Cria uma nova fábrica
+	 * @param draw Local para printar
 	 */
-	public BodyFactory()
+	public BodyFactory(Draw draw)
 	{
 		this.position = Positions.getBodyFactoryPosition();
 		this.inventory = new Body[Constants.bodyInventoryLenght];
 		for(int i = 0; i < inventory.length; i++)
 			inventory[i] = null;
+		this.draw = draw;
 	}
 	
 	/**
@@ -79,7 +91,7 @@ public class BodyFactory  {
 	 * Imprime peças no inventário
 	 * @param draw Imprime peças no inventário
 	 */
-	public void Draw(Draw draw)
+	public void Draw()
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) inventory[i].Draw(draw);

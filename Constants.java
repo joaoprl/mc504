@@ -29,4 +29,5 @@ public abstract class Constants {
 	
 	public static final int numberOfWorkSites = 3; // Número de locais de trabalho (deve ser igual ao número de trabalhadores)
 	public static final int numberOfWorkers = 3; // Número de trabalhadores (deve ser igual ao número de locais de trabalho)
+	
 }

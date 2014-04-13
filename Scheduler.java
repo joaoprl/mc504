@@ -1,6 +1,15 @@
 import java.awt.Point;
 
-public class Scheduler {
+public class Scheduler implements Runnable {
+	public void run()
+	{
+		while(true)
+		{
+			this.Update();
+			this.Draw();
+		}
+	}
+	
 	String[] image;
 	Point position;
 	WorkSite[] workSites;
@@ -9,16 +18,18 @@ public class Scheduler {
 	BodyFactory bodyFactory; 
 	TireFactory tireFactory;
 	Worker[] workers;
+	Draw draw;
 	
 	/**
-	 * Cria novo scheduler
+	 * Cria novo scheduler]
+	 * @param draw Local de impressão
 	 * @param pendingRequests Lista de espera de pedidos
 	 * @param engineFactory Fábrica de motores
 	 * @param bodyFactory Fábrica de carcaças
 	 * @param tireFactory Fábrica de pneus
 	 * @param workers Vetor de trabalhadores
 	 */
-	public Scheduler(PendingRequests pendingRequests, EngineFactory engineFactory, BodyFactory bodyFactory, TireFactory tireFactory, WorkSite[] workSites, Worker[] workers)
+	public Scheduler(Draw draw, PendingRequests pendingRequests, EngineFactory engineFactory, BodyFactory bodyFactory, TireFactory tireFactory, WorkSite[] workSites, Worker[] workers)
 	{
 		this.image = Images.getScheduler();
 		this.position = Positions.getSchedulerPosition();
@@ -29,6 +40,7 @@ public class Scheduler {
 		this.tireFactory = tireFactory;
 		this.workers = workers;
 		this.workSites = workSites;
+		this.draw = draw;
 	}
 	
 	/**
@@ -59,7 +71,7 @@ public class Scheduler {
 	 * Imprime scheduler e workSites
 	 * @param draw Local de impressão
 	 */
-	public void Draw(Draw draw)
+	public void Draw()
 	{
 		draw.addPrint(image, position);
 		if(workSites == null) 

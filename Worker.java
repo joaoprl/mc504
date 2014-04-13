@@ -1,7 +1,15 @@
 import java.awt.Point;
 
-
-public class Worker {
+public class Worker implements Runnable {
+	public void run()
+	{
+		while(true)
+		{
+			this.Update();
+			this.Draw();
+		}
+	}
+	
 	WorkSite workSite;
 	Request request;
 	Point position;
@@ -10,13 +18,15 @@ public class Worker {
 	BodyFactory bodyFactory;
 	TireFactory tireFactory;
 	EngineFactory engineFactory;
+	Draw draw;
 	
 	/**
 	 * Inicializa funcionário
+	 * @param draw Local de impressão
 	 * @param workSite Local de Trabalho do Funcionário
 	 * @param ID ID do funcionário (deve ser a mesma do workSite)
 	 */
-	public Worker(WorkSite workSite, int ID, BodyFactory bodyFactory, TireFactory tireFactory, EngineFactory engineFactory)
+	public Worker(Draw draw, WorkSite workSite, int ID, BodyFactory bodyFactory, TireFactory tireFactory, EngineFactory engineFactory)
 	{
 		this.workSite = workSite;
 		request = null;
@@ -26,6 +36,7 @@ public class Worker {
 		this.bodyFactory = bodyFactory;
 		this.tireFactory = tireFactory;
 		this.engineFactory = engineFactory;
+		this.draw = draw;
 	}
 	
 	/**
@@ -94,7 +105,7 @@ public class Worker {
 	 * Imprime imagem do funcionário
 	 * @param draw Local para impressão
 	 */
-	public void Draw(Draw draw)
+	public void Draw()
 	{
 		draw.addPrint(image, position);
 	}

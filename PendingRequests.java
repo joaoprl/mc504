@@ -1,20 +1,32 @@
 import java.awt.Point;
 
-public class PendingRequests {	
+public class PendingRequests implements Runnable {
+	public void run()
+	{
+		while(true)
+		{
+			this.Update();
+			this.Draw();
+		}
+	}
+	
 	Request []pendingRequests;
 	String[] image;
 	Point position;
+	Draw draw;
 	
 	/**
 	 * Cria nova fila de pedidos
+	 * @param draw Local de impressão
 	 */
-	public PendingRequests()
+	public PendingRequests(Draw draw)
 	{	
 		this.image = Images.getPendingRequests();
 		this.position = Positions.getPendingRequestsPosition();
 		pendingRequests = new Request[Constants.pendingRequestsMax];
 		for(int i = 0; i < pendingRequests.length; i++)
 			pendingRequests[i] = null;
+		this.draw = draw;
 	}
 	
 	/**
@@ -81,7 +93,7 @@ public class PendingRequests {
 	 * Imprime lista de espera de pedidos
 	 * @param draw Local de impressão
 	 */
-	public void Draw(Draw draw)
+	public void Draw()
 	{
 		draw.addPrint(image, position);
 		for(int i = 0; i < pendingRequests.length; i++)
