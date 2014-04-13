@@ -6,6 +6,10 @@ public class Request {
 	int engineType;
 	int tireType;
 	
+	boolean drawable;	
+	String[] image;
+	Point position;
+		
 	/**
 	 * @return the iD
 	 */
@@ -33,10 +37,6 @@ public class Request {
 	public int getTireType() {
 		return tireType;
 	}
-	
-	boolean drawable;	
-	String[] image;
-	Point position;
 	
 	/**
 	 * Cria um novo pedido

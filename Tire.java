@@ -1,13 +1,7 @@
 import java.awt.Point;
 
 
-public class Tire {
-	String[][] image;
-	int fase; // Fase atual do pneu 
-	int maxOfFases; // Número de fases totais
-	Point position;
-	int type;
-	
+public class Tire extends Parts{
 	/**
 	 * Inicializa um pneu
 	 * @param type Tipo do pneu [0,2]
@@ -15,44 +9,17 @@ public class Tire {
 	 */
 	public Tire(int type, Point position)
 	{
+		super(type, position);
 		image = Images.getTireImage(type);
-		fase = 0;
-		maxOfFases = image.length;
-		this. position = position;
-		this.type = type;
-	}
-
-	/**
-	 * @return Retorna o tipo do pneu
-	 */
-	public int getType()
-	{
-		return this.type;
-	}
-	
-	public void Update()
-	{
-		
-	}
-	
-	public boolean Ready()
-	{
-		if(fase == maxOfFases) return true;
-		else return false;
-	}
-	
-	public void setPosition(Point position)
-	{
-		this.position = position;
+		maxOfFases = image.length - 1;
 	}
 	
 	/**
-	 * Imprime o pneu na posição que ele está agora
-	 * @param draw Local de desenho
+	 * Imprime segunda roda (quando o carro está sendo montado)
+	 * @param draw Local de impressão
 	 */
-	public void Draw(Draw draw)
+	public void DrawSecondTire(Draw draw)
 	{
-		draw.addPrint(image[fase], position);
+		draw.addPrint(image[fase], new Point(position.x + 3, position.y));
 	}
-
 }

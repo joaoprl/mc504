@@ -5,8 +5,8 @@ public class Main{
 	public static void main(String []args)
 	{
 		/* Seleciona modo de jogo modo =[0 para discreto, 1 para continuo] */
-		int modo = Constants.DiscreteMode; // não setado
-		/*
+		int modo = -1; // não setado
+		
 		Scanner scanner = new Scanner(System.in);
 		while(modo == -1)
 		{	
@@ -23,15 +23,13 @@ public class Main{
 				break;
 			}
 		}
-		scanner.close();*/ 
-		
-		
 		
 		Scene scene = new Scene();
 		Draw draw = new Draw(Constants.scenarioLength.y,Constants.scenarioLength.x);
 		
 		/* Sequencia de cena */
-		// TODO Ler um comando de finalização 
+		// TODO Ler um comando de finalização e fechar o scanner (comentado no final da main)
+		// TODO no modo Discreto, aceitar entrada de pedidos manual
 		while(true) 
 		{
 			if(modo == Constants.DiscreteMode) // Modo discreto 
@@ -56,7 +54,7 @@ public class Main{
 				}catch(InterruptedException e){draw.addLog(e.getMessage());}
 			}	
 		}
-		
+		// scanner.close();
 	}
 }
 

@@ -29,12 +29,13 @@ public class Worker {
 	}
 	
 	/**
-	 * Dá um pedido ao funcionário
+	 * Dá um pedido ao funcionário (e funcionário anexa pedido no local de trabalho)
 	 * @param request Pedido a ser recebido
 	 */
 	public void receiveRequest(Request request)
 	{
 		this.request = request;
+		workSite.setRequest(request);
 	}
 	
 	/**
@@ -46,23 +47,46 @@ public class Worker {
 		return false;
 	}
 	
+	/**
+	 * Funcionário faz seu trabalho
+	 */
 	public void Update()
 	{
-		if(request != null)
+		outSideIf:
+		if(request != null) // Se tem algo a fazer
 		{
-			if(bodyFactory.hasABody(request.getBodyType()))
-				workSite.addPart(bodyFactory.takeProduct(request.getBodyType()));
-			else bodyFactory.newRequest(request.getBodyType());
+			if(!workSite.hasABody()) // Seu local de trabalho não tem uma carcaça
+			{
+				if(bodyFactory.hasABody(request.getBodyType())) // Tem a peça na fábrica
+					workSite.addPart(bodyFactory.takeProduct(request.getBodyType())); // Retira a peça
+				else bodyFactory.newRequest(request.getBodyType()); // Não tem peça, realiza um pedido
+				
+				break outSideIf; // Uma ação por vez
+			}
 			
-			if(tireFactory.hasATire(request.getTireType()))
-				workSite.addPart(tireFactory.takeProduct(request.getTireType()));
-			else tireFactory.newRequest(request.getTireType());
+			if(!workSite.hasATire()) // Seu local de trabalho não tem pneu
+			{ 
+				if(tireFactory.hasATire(request.getTireType())) // Tem a peça na fábrica
+					workSite.addPart(tireFactory.takeProduct(request.getTireType())); // Retira a peça
+				else tireFactory.newRequest(request.getTireType()); // Não tem peça, realiza um pedido
+				
+				break outSideIf; // Uma ação por vez
+			}
 			
-			if(engineFactory.hasAEngine(request.getEngineType()))
-				workSite.addPart(engineFactory.takeProduct(request.getEngineType()));
-			else engineFactory.newRequest(request.getEngineType());
+			if(!workSite.hasAnEngine()) // Seu local de trabalho não tem motor
+			{
+				if(engineFactory.hasAEngine(request.getEngineType())) // Tem a peça na fábrica
+					workSite.addPart(engineFactory.takeProduct(request.getEngineType())); // Retira a peça
+				else engineFactory.newRequest(request.getEngineType()); // Não tem peça, realiza um pedido
+				
+				break outSideIf; // Uma ação por vez
+			}
 			
-			if(workSite.carIsComplete()) workSite.clearWorkSite();
+			if(workSite.carIsComplete()) 
+			{
+				workSite.clearWorkSite();
+				this.request = null; // apaga pedido
+			}
 		}
 	}
 	

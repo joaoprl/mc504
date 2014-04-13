@@ -94,6 +94,9 @@ public class Draw {
 		for(int i = 0; i < log.length; i++)
 			if(!log[i].equals("")) System.out.println(log[i]); 
 		
+		System.out.println("-------------------------");
+		System.out.println();
+		
 		clearLog();
 		clearScenario();
 	}

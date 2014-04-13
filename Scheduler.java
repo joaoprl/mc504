@@ -1,6 +1,5 @@
 import java.awt.Point;
 
-
 public class Scheduler {
 	String[] image;
 	Point position;

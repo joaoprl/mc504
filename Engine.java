@@ -1,13 +1,7 @@
 import java.awt.Point;
 
 
-public class Engine {
-	String[][] image;
-	int fase; // Fase atual do motor 
-	int maxOfFases; // Número de fases totais
-	Point position;
-	int type;
-	
+public class Engine extends Parts{
 	/**
 	 * Inicializa um motor
 	 * @param type Tipo do motor [0,2]
@@ -15,44 +9,8 @@ public class Engine {
 	 */
 	public Engine(int type, Point position)
 	{
+		super(type, position);
 		image = Images.getEngineImage(type);
-		fase = 0;
-		maxOfFases = image.length;
-		this. position = position;
-		this.type = type;
-	}
-	
-	/**
-	 * @return Tipo da peça
-	 */
-	public int getType()
-	{
-		return this.type;
-	}
-	
-	public void Update()
-	{
-		
-	}
-	
-	public boolean Ready()
-	{
-		if(fase == maxOfFases) return true;
-		else return false;
-	}
-	
-	public void setPosition(Point position)
-	{
-		this.position = position;
-	}
-	
-	/**
-	 * Imprime o motor na posição que ele está agora
-	 * @param draw Local de desenho
-	 */
-	public void Draw(Draw draw)
-	{
-		draw.addPrint(image[fase], position);
-	}
-
+		maxOfFases = image.length - 1;
+	}	
 }

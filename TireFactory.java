@@ -1,6 +1,5 @@
 import java.awt.Point;
 
-
 public class TireFactory {
 	Point position; // Posição da fábrica
 	Tire [] inventory; // Estoque da fábrica
@@ -35,7 +34,7 @@ public class TireFactory {
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
-				if(inventory[i].getType() == type) return true;
+				if(inventory[i].getType() == type && inventory[i].isReady()) return true;
 		return false;
 	}
 	
@@ -48,7 +47,7 @@ public class TireFactory {
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
-				if(inventory[i].getType() == type)
+				if(inventory[i].getType() == type && inventory[i].isReady())
 				{
 					Tire tire = inventory[i];
 					inventory[i] = null;
@@ -64,7 +63,7 @@ public class TireFactory {
 	 */
 	Point getInventoryPositon(int i)
 	{
-		return new Point(this.position.x + i%2, this.position.y + ((int)i/2));
+		return new Point(this.position.x + 2*(i%2), this.position.y + ((int)i/2));
 	}
 	
 	/**

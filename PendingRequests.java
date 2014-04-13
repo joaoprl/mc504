@@ -45,6 +45,9 @@ public class PendingRequests {
 		return request;
 	}
 	
+	/**
+	 * Cria novos pedidos aleatórios
+	 */
 	public void Update()
 	{
 		generateRequest();

@@ -1,6 +1,6 @@
 import java.awt.Point;
 
-public class BodyFactory {
+public class BodyFactory  {
 	Point position; // Posição da fábrica
 	Body [] inventory; // Estoque da fábrica
 	
@@ -34,7 +34,7 @@ public class BodyFactory {
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
-				if(inventory[i].getType() == type) return true;
+				if(inventory[i].getType() == type && inventory[i].isReady()) return true;
 		return false;
 	}
 	
@@ -47,7 +47,7 @@ public class BodyFactory {
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
-				if(inventory[i].getType() == type)
+				if(inventory[i].getType() == type && inventory[i].isReady())
 				{
 					Body body = inventory[i];
 					inventory[i] = null;
@@ -55,7 +55,6 @@ public class BodyFactory {
 				}
 		return null;
 	}
-	
 	
 	/**
 	 * Retorna a posição no cenário de um dado local do inventário
@@ -85,4 +84,5 @@ public class BodyFactory {
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) inventory[i].Draw(draw);
 	}
+
 }

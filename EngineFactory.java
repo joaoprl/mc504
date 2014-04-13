@@ -14,6 +14,19 @@ public class EngineFactory {
 		for(int i = 0; i < inventory.length; i++)
 			inventory[i] = null;
 	}
+
+	/**
+	 * Se a fábrica tem, no inventário um dado tipo de motor
+	 * @param type Tipo de motor
+	 * @return Retorna true se tem o motor, false caso contrário
+	 */
+	public boolean hasAEngine(int type)
+	{
+		for(int i = 0; i < inventory.length; i++)
+			if(inventory[i] != null) 
+				if(inventory[i].getType() == type && inventory[i].isReady()) return true;
+		return false;
+	}
 	
 	/**
 	 * Faz um pedido de um tipo específico de motor
@@ -26,19 +39,6 @@ public class EngineFactory {
 	}
 	
 	/**
-	 * Se a fábrica tem, no inventário um dado tipo de motor
-	 * @param type Tipo de motor
-	 * @return Retorna true se tem o motor, false caso contrário
-	 */
-	public boolean hasAEngine(int type)
-	{
-		for(int i = 0; i < inventory.length; i++)
-			if(inventory[i] != null) 
-				if(inventory[i].getType() == type) return true;
-		return false;
-	}
-	
-	/**
 	 * Retira um motor da fábrica (retorna null se não tiver motor daquele tipo)
 	 * @param type Tipo do motor desejado
 	 * @return Motor do tipo desejado, se existente; null caso contrário
@@ -47,7 +47,7 @@ public class EngineFactory {
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
-				if(inventory[i].getType() == type)
+				if(inventory[i].getType() == type && inventory[i].isReady())
 				{
 					Engine engine = inventory[i];
 					inventory[i] = null;
@@ -63,7 +63,7 @@ public class EngineFactory {
 	 */
 	Point getInventoryPositon(int i)
 	{
-		return new Point(this.position.x + i%2, this.position.y + ((int)i/2));
+		return new Point(this.position.x + 2*(i%2), this.position.y + ((int)i/2));
 	}
 	
 	/**
