@@ -35,6 +35,12 @@ public class Engine {
 		
 	}
 	
+	public boolean Ready()
+	{
+		if(fase == maxOfFases) return true;
+		else return false;
+	}
+	
 	public void setPosition(Point position)
 	{
 		this.position = position;
