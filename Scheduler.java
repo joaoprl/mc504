@@ -1,4 +1,5 @@
 import java.awt.Point;
+import java.util.concurrent.BrokenBarrierException;
 
 public class Scheduler {
 	String[] image;
@@ -52,6 +53,12 @@ public class Scheduler {
 		{
 			Request request = pendingRequests.peekRequest(0);
 			if(request != null) worker.receiveRequest(pendingRequests.getRequest(request.getID())); // Entrega o próximo para ele
+		}
+		try {
+			Constants.barrier.await();
+		} catch (InterruptedException | BrokenBarrierException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

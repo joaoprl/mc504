@@ -1,4 +1,5 @@
 import java.awt.Point;
+import java.util.concurrent.BrokenBarrierException;
 
 public class BodyFactory  {
 	Point position; // Posição da fábrica
@@ -19,7 +20,7 @@ public class BodyFactory  {
 	 * Faz um pedido de um tipo específico de carcaça
 	 * @param type tipo da carcaça
 	 */
-	public void newRequest(int type)
+	public synchronized void newRequest(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] == null) inventory[i] = new Body(type, this.getInventoryPositon(i));
@@ -30,7 +31,7 @@ public class BodyFactory  {
 	 * @param type Tipo de carcaça
 	 * @return Retorna true se tem a carcaça ou false caso contrário
 	 */
-	public boolean hasABody(int type)
+	public synchronized boolean hasABody(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
@@ -43,7 +44,7 @@ public class BodyFactory  {
 	 * @param type Tipo da carcaça desejada
 	 * @return Carcaça do tipo desejado, se existente; null caso contrário
 	 */
-	public Body takeProduct(int type)
+	public synchronized Body takeProduct(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
@@ -71,8 +72,18 @@ public class BodyFactory  {
 	 */
 	public void Update()
 	{
+		synchronized (this)
+		{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) inventory[i].Update();
+		}
+		
+		try {
+			Constants.barrier.await();
+		} catch (InterruptedException | BrokenBarrierException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**

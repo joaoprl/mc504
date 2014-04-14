@@ -1,4 +1,5 @@
 import java.awt.Point;
+import java.util.concurrent.BrokenBarrierException;
 
 
 public class Worker {
@@ -32,7 +33,7 @@ public class Worker {
 	 * Dá um pedido ao funcionário (e funcionário anexa pedido no local de trabalho)
 	 * @param request Pedido a ser recebido
 	 */
-	public void receiveRequest(Request request)
+	public synchronized void receiveRequest(Request request)
 	{
 		this.request = request;
 		workSite.setRequest(request);
@@ -41,7 +42,7 @@ public class Worker {
 	/**
 	 * @return Se o funcionário está livre (sem pedidos) retorna true; caso contrário, false
 	 */
-	public boolean isFree()
+	public synchronized boolean isFree()
 	{
 		if(request == null) return true;
 		return false;
@@ -50,7 +51,7 @@ public class Worker {
 	/**
 	 * Funcionário faz seu trabalho
 	 */
-	public void Update()
+	public synchronized void Update()
 	{
 		outSideIf:
 		if(request != null) // Se tem algo a fazer
@@ -86,6 +87,13 @@ public class Worker {
 			{
 				workSite.clearWorkSite();
 				this.request = null; // apaga pedido
+			}
+			
+			try {
+				Constants.barrier.await();
+			} catch (InterruptedException | BrokenBarrierException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}

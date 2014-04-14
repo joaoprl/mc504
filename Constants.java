@@ -1,5 +1,6 @@
 import java.awt.Point;
 import java.util.Random;
+import java.util.concurrent.CyclicBarrier;
 
 public abstract class Constants {
 	/**
@@ -29,4 +30,14 @@ public abstract class Constants {
 	
 	public static final int numberOfWorkSites = 3; // Número de locais de trabalho (deve ser igual ao número de trabalhadores)
 	public static final int numberOfWorkers = 3; // Número de trabalhadores (deve ser igual ao número de locais de trabalho)
+	
+	public static final CyclicBarrier barrier = new CyclicBarrier(numberOfWorkers + 5, new barrierRun());
+	
+	public static class barrierRun implements Runnable
+	{
+		public void run ()
+		{
+			Main.scene.Draw(Main.draw);
+		}
+	}
 }

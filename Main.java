@@ -1,7 +1,10 @@
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Main{	
+public class Main{
+	public static Scene scene = new Scene();
+	public static Draw draw = new Draw(Constants.scenarioLength.y,Constants.scenarioLength.x);
+	
 	public static void main(String []args)
 	{
 		/* Seleciona modo de jogo modo =[0 para discreto, 1 para continuo] */
@@ -24,9 +27,6 @@ public class Main{
 			}
 		}
 		
-		Scene scene = new Scene();
-		Draw draw = new Draw(Constants.scenarioLength.y,Constants.scenarioLength.x);
-		
 		/* Sequencia de cena */
 		// TODO Ler um comando de finalização e fechar o scanner (comentado no final da main)
 		// TODO no modo Discreto, aceitar entrada de pedidos manual
@@ -44,7 +44,7 @@ public class Main{
 			
 			// Atualização da cena
 			scene.Update();
-			scene.Draw(draw);
+			//scene.Draw(draw);
 			
 			if(modo == Constants.ContinueMode) // Modo continuo (dorme por sleepLength milisegundos)
 			{
@@ -52,9 +52,8 @@ public class Main{
 					Thread.sleep(Constants.sleepLength); // Modo continuo, tempo de espera
 				
 				}catch(InterruptedException e){draw.addLog(e.getMessage());}
-			}	
+			}
 		}
-		// scanner.close();
 	}
 }
 

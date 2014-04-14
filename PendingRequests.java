@@ -1,9 +1,13 @@
 import java.awt.Point;
+import java.util.concurrent.BrokenBarrierException;
 
 public class PendingRequests {	
 	Request []pendingRequests;
 	String[] image;
 	Point position;
+	private static Object lock[] = new Object[3];
+	
+	
 	
 	/**
 	 * Cria nova fila de pedidos
@@ -15,6 +19,8 @@ public class PendingRequests {
 		pendingRequests = new Request[Constants.pendingRequestsMax];
 		for(int i = 0; i < pendingRequests.length; i++)
 			pendingRequests[i] = null;
+		for (int i = 0; i < 3; i++)
+			lock[i] = new Object();
 	}
 	
 	/**
@@ -24,7 +30,10 @@ public class PendingRequests {
 	 */
 	public Request peekRequest(int ID)
 	{
-		return pendingRequests[ID];		
+		synchronized (lock[0])
+		{
+			return pendingRequests[ID];	
+		}
 	}
 	
 	/**
@@ -34,15 +43,24 @@ public class PendingRequests {
 	 */
 	public Request getRequest(int ID)
 	{
-		Request request = pendingRequests[ID];
-		for(int i = ID; i < pendingRequests.length - 1; i++)
+		synchronized (lock[0])
 		{
-			pendingRequests[i] = pendingRequests[i+1];
-			if(pendingRequests[i] != null)pendingRequests[i].newID(i);
+			synchronized (lock[1])
+			{
+				synchronized (lock[2])
+				{
+					Request request = pendingRequests[ID];
+					for(int i = ID; i < pendingRequests.length - 1; i++)
+					{
+						pendingRequests[i] = pendingRequests[i+1];
+						if(pendingRequests[i] != null)pendingRequests[i].newID(i);
+					}
+					pendingRequests[pendingRequests.length - 1] = null;
+					request.newID(-1);
+					return request;						
+				}		
+			}
 		}
-		pendingRequests[pendingRequests.length - 1] = null;
-		request.newID(-1);
-		return request;
 	}
 	
 	/**
@@ -50,13 +68,28 @@ public class PendingRequests {
 	 */
 	public void Update()
 	{
-		generateRequest();
+		synchronized (lock[0])
+		{
+			synchronized (lock[1])
+			{
+				synchronized (lock[2])
+				{
+					generateRequest();			
+				}		
+			}
+		}
+		try {
+			Constants.barrier.await();
+		} catch (InterruptedException | BrokenBarrierException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
 	 * Cria um novo pedido aleatório e o adiciona à fila de espera
 	 */
-	public void generateRequest()
+	private void generateRequest()
 	{
 		for(int i = 0; i < pendingRequests.length; i++)
 		{
@@ -74,7 +107,10 @@ public class PendingRequests {
 	 */
 	public int getSize()
 	{
-		return pendingRequests.length;
+		synchronized (lock[1])
+		{
+			return pendingRequests.length;
+		}
 	}
 	
 	/**

@@ -1,4 +1,5 @@
 import java.awt.Point;
+import java.util.concurrent.BrokenBarrierException;
 
 public class EngineFactory {
 	Point position; // Posição da fábrica
@@ -20,7 +21,7 @@ public class EngineFactory {
 	 * @param type Tipo de motor
 	 * @return Retorna true se tem o motor, false caso contrário
 	 */
-	public boolean hasAEngine(int type)
+	public synchronized boolean hasAEngine(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
@@ -32,7 +33,7 @@ public class EngineFactory {
 	 * Faz um pedido de um tipo específico de motor
 	 * @param type tipo da motor
 	 */
-	public void newRequest(int type)
+	public synchronized void newRequest(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] == null) inventory[i] = new Engine(type, this.getInventoryPositon(i));
@@ -43,7 +44,7 @@ public class EngineFactory {
 	 * @param type Tipo do motor desejado
 	 * @return Motor do tipo desejado, se existente; null caso contrário
 	 */
-	public Engine takeProduct(int type)
+	public synchronized Engine takeProduct(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
@@ -71,8 +72,18 @@ public class EngineFactory {
 	 */
 	public void Update()
 	{
+		synchronized (this)
+		{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) inventory[i].Update();
+		}
+		
+		try {
+			Constants.barrier.await();
+		} catch (InterruptedException | BrokenBarrierException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
