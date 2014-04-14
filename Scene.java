@@ -38,16 +38,16 @@ public class Scene {
 	 */
 	public void Update()
 	{
-		bodyFactory.Update();
-		engineFactory.Update();
-		tireFactory.Update();
+		bodyFactory.start();
+		engineFactory.start();
+		tireFactory.start();
 		
-		pendingRequests.Update();
+		pendingRequests.start();
 		
-		scheduler.Update();
+		scheduler.start();
 		
 		for(int i = 0; i < workers.length; i++)
-			workers[i].Update();
+			workers[i].start();
 	}
 	
 	public void Draw(Draw draw)

@@ -1,7 +1,7 @@
 import java.awt.Point;
 import java.util.concurrent.BrokenBarrierException;
 
-public class Scheduler {
+public class Scheduler extends Thread {
 	String[] image;
 	Point position;
 	WorkSite[] workSites;
@@ -35,7 +35,7 @@ public class Scheduler {
 	/**
 	 * Procura por funcionário livre e entrega o próximo pedido da fila de espera para ele
 	 */
-	public void Update()
+	private void Update()
 	{
 		/* Procura por um funcionário livre */
 		Worker worker = null;
@@ -73,5 +73,11 @@ public class Scheduler {
 			{System.exit(10);System.out.println("\\o/");}
 		for(int i = 0; i < workSites.length; i++){
 			workSites[i].Draw(draw);}
+	}
+	
+	public void run()
+	{
+		while (true)
+			Update();
 	}
 }

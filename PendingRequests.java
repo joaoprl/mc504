@@ -1,7 +1,7 @@
 import java.awt.Point;
 import java.util.concurrent.BrokenBarrierException;
 
-public class PendingRequests {	
+public class PendingRequests extends Thread{	
 	Request []pendingRequests;
 	String[] image;
 	Point position;
@@ -66,7 +66,7 @@ public class PendingRequests {
 	/**
 	 * Cria novos pedidos aleatórios
 	 */
-	public void Update()
+	private void Update()
 	{
 		synchronized (lock[0])
 		{
@@ -123,5 +123,10 @@ public class PendingRequests {
 		for(int i = 0; i < pendingRequests.length; i++)
 			if(pendingRequests[i] != null) pendingRequests[i].Draw(draw);
 	}
-
+	
+	public void run()
+	{
+		while (true)
+			Update();
+	}
 }

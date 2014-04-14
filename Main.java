@@ -27,11 +27,6 @@ public class Main{
 			}
 		}
 		
-		/* Sequencia de cena */
-		// TODO Ler um comando de finalização e fechar o scanner (comentado no final da main)
-		// TODO no modo Discreto, aceitar entrada de pedidos manual
-		while(true) 
-		{
 			if(modo == Constants.DiscreteMode) // Modo discreto 
 			{
 				System.out.println("Waiting:");
@@ -53,7 +48,6 @@ public class Main{
 				
 				}catch(InterruptedException e){draw.addLog(e.getMessage());}
 			}
-		}
 	}
 }
 

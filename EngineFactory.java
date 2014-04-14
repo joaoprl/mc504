@@ -1,7 +1,7 @@
 import java.awt.Point;
 import java.util.concurrent.BrokenBarrierException;
 
-public class EngineFactory {
+public class EngineFactory extends Thread {
 	Point position; // Posição da fábrica
 	Engine [] inventory; // Estoque da fábrica
 	
@@ -70,7 +70,7 @@ public class EngineFactory {
 	/**
 	 * Atualiza peças no inventário
 	 */
-	public void Update()
+	private void Update()
 	{
 		synchronized (this)
 		{
@@ -95,5 +95,10 @@ public class EngineFactory {
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) inventory[i].Draw(draw);
 	}
-
+	
+	public void run()
+	{
+		while (true)
+			Update();
+	}
 }

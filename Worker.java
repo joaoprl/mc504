@@ -2,7 +2,7 @@ import java.awt.Point;
 import java.util.concurrent.BrokenBarrierException;
 
 
-public class Worker {
+public class Worker extends Thread{
 	WorkSite workSite;
 	Request request;
 	Point position;
@@ -51,50 +51,53 @@ public class Worker {
 	/**
 	 * Funcionário faz seu trabalho
 	 */
-	public synchronized void Update()
+	private void Update()
 	{
-		outSideIf:
-		if(request != null) // Se tem algo a fazer
+		synchronized (this)
 		{
-			if(!workSite.hasABody()) // Seu local de trabalho não tem uma carcaça
+			outSideIf:
+			if(request != null) // Se tem algo a fazer
 			{
-				if(bodyFactory.hasABody(request.getBodyType())) // Tem a peça na fábrica
-					workSite.addPart(bodyFactory.takeProduct(request.getBodyType())); // Retira a peça
-				else bodyFactory.newRequest(request.getBodyType()); // Não tem peça, realiza um pedido
+				if(!workSite.hasABody()) // Seu local de trabalho não tem uma carcaça
+				{
+					if(bodyFactory.hasABody(request.getBodyType())) // Tem a peça na fábrica
+						workSite.addPart(bodyFactory.takeProduct(request.getBodyType())); // Retira a peça
+					else bodyFactory.newRequest(request.getBodyType()); // Não tem peça, realiza um pedido
+					
+					break outSideIf; // Uma ação por vez
+				}
 				
-				break outSideIf; // Uma ação por vez
-			}
-			
-			if(!workSite.hasATire()) // Seu local de trabalho não tem pneu
-			{ 
-				if(tireFactory.hasATire(request.getTireType())) // Tem a peça na fábrica
-					workSite.addPart(tireFactory.takeProduct(request.getTireType())); // Retira a peça
-				else tireFactory.newRequest(request.getTireType()); // Não tem peça, realiza um pedido
+				if(!workSite.hasATire()) // Seu local de trabalho não tem pneu
+				{ 
+					if(tireFactory.hasATire(request.getTireType())) // Tem a peça na fábrica
+						workSite.addPart(tireFactory.takeProduct(request.getTireType())); // Retira a peça
+					else tireFactory.newRequest(request.getTireType()); // Não tem peça, realiza um pedido
+					
+					break outSideIf; // Uma ação por vez
+				}
 				
-				break outSideIf; // Uma ação por vez
-			}
-			
-			if(!workSite.hasAnEngine()) // Seu local de trabalho não tem motor
-			{
-				if(engineFactory.hasAEngine(request.getEngineType())) // Tem a peça na fábrica
-					workSite.addPart(engineFactory.takeProduct(request.getEngineType())); // Retira a peça
-				else engineFactory.newRequest(request.getEngineType()); // Não tem peça, realiza um pedido
+				if(!workSite.hasAnEngine()) // Seu local de trabalho não tem motor
+				{
+					if(engineFactory.hasAEngine(request.getEngineType())) // Tem a peça na fábrica
+						workSite.addPart(engineFactory.takeProduct(request.getEngineType())); // Retira a peça
+					else engineFactory.newRequest(request.getEngineType()); // Não tem peça, realiza um pedido
+					
+					break outSideIf; // Uma ação por vez
+				}
 				
-				break outSideIf; // Uma ação por vez
+				if(workSite.carIsComplete()) 
+				{
+					workSite.clearWorkSite();
+					this.request = null; // apaga pedido
+				}
 			}
-			
-			if(workSite.carIsComplete()) 
-			{
-				workSite.clearWorkSite();
-				this.request = null; // apaga pedido
-			}
-			
-			try {
-				Constants.barrier.await();
-			} catch (InterruptedException | BrokenBarrierException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		}
+		
+		try {
+			Constants.barrier.await();
+		} catch (InterruptedException | BrokenBarrierException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -106,5 +109,10 @@ public class Worker {
 	{
 		draw.addPrint(image, position);
 	}
-
+	
+	public void run()
+	{
+		while (true)
+			Update();
+	}
 }
