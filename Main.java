@@ -31,7 +31,7 @@ public class Main{
 		Constants.mode = mode;
 		scene.Update();
 		
-		scanner.close();
+		// scanner.close();
 	}
 	
 }
