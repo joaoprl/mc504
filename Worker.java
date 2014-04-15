@@ -11,6 +11,7 @@ public class Worker extends Thread{
 	BodyFactory bodyFactory;
 	TireFactory tireFactory;
 	EngineFactory engineFactory;
+	public static Object lock[] = new Object[3];
 	
 	/**
 	 * Inicializa funcionário
@@ -27,6 +28,9 @@ public class Worker extends Thread{
 		this.bodyFactory = bodyFactory;
 		this.tireFactory = tireFactory;
 		this.engineFactory = engineFactory;
+		
+		for (int i = 0; i < 3; i++)
+			lock[i] = new Object();
 	}
 	
 	/**
@@ -58,31 +62,40 @@ public class Worker extends Thread{
 			outSideIf:
 			if(request != null) // Se tem algo a fazer
 			{
-				if(!workSite.hasABody()) // Seu local de trabalho não tem uma carcaça
+				synchronized (lock[0])
 				{
-					if(bodyFactory.hasABody(request.getBodyType())) // Tem a peça na fábrica
-						workSite.addPart(bodyFactory.takeProduct(request.getBodyType())); // Retira a peça
-					else bodyFactory.newRequest(request.getBodyType()); // Não tem peça, realiza um pedido
-					
-					break outSideIf; // Uma ação por vez
+					if(!workSite.hasABody()) // Seu local de trabalho não tem uma carcaça
+					{
+						if(bodyFactory.hasABody(request.getBodyType())) // Tem a peça na fábrica
+							workSite.addPart(bodyFactory.takeProduct(request.getBodyType())); // Retira a peça
+						else bodyFactory.newRequest(request.getBodyType()); // Não tem peça, realiza um pedido
+						
+						break outSideIf; // Uma ação por vez
+					}
 				}
 				
-				if(!workSite.hasATire()) // Seu local de trabalho não tem pneu
-				{ 
-					if(tireFactory.hasATire(request.getTireType())) // Tem a peça na fábrica
-						workSite.addPart(tireFactory.takeProduct(request.getTireType())); // Retira a peça
-					else tireFactory.newRequest(request.getTireType()); // Não tem peça, realiza um pedido
-					
-					break outSideIf; // Uma ação por vez
+				synchronized (lock[1])
+				{				
+					if(!workSite.hasATire()) // Seu local de trabalho não tem pneu
+					{ 
+						if(tireFactory.hasATire(request.getTireType())) // Tem a peça na fábrica
+							workSite.addPart(tireFactory.takeProduct(request.getTireType())); // Retira a peça
+						else tireFactory.newRequest(request.getTireType()); // Não tem peça, realiza um pedido
+						
+						break outSideIf; // Uma ação por vez
+					}
 				}
 				
-				if(!workSite.hasAnEngine()) // Seu local de trabalho não tem motor
-				{
-					if(engineFactory.hasAEngine(request.getEngineType())) // Tem a peça na fábrica
-						workSite.addPart(engineFactory.takeProduct(request.getEngineType())); // Retira a peça
-					else engineFactory.newRequest(request.getEngineType()); // Não tem peça, realiza um pedido
-					
-					break outSideIf; // Uma ação por vez
+				synchronized (lock[2])
+				{				
+					if(!workSite.hasAnEngine()) // Seu local de trabalho não tem motor
+					{
+						if(engineFactory.hasAEngine(request.getEngineType())) // Tem a peça na fábrica
+							workSite.addPart(engineFactory.takeProduct(request.getEngineType())); // Retira a peça
+						else engineFactory.newRequest(request.getEngineType()); // Não tem peça, realiza um pedido
+						
+						break outSideIf; // Uma ação por vez
+					}
 				}
 				
 				if(workSite.carIsComplete()) 
