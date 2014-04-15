@@ -48,6 +48,20 @@ public class Scene {
 		
 		for(int i = 0; i < workers.length; i++)
 			workers[i].start();
+		
+		try{
+		bodyFactory.join();
+		engineFactory.join();
+		tireFactory.join();
+		
+		pendingRequests.join();
+		
+		scheduler.join();
+		
+		for(int i = 0; i < workers.length; i++)
+			workers[i].join();
+		}catch(InterruptedException e){Main.draw.addLog(e.getMessage());}
+		
 	}
 	
 	public void Draw(Draw draw)

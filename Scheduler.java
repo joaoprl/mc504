@@ -56,13 +56,6 @@ public class Scheduler extends Thread {
 		}
 		
 		try {
-			Thread.sleep(Constants.sleepLength);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		try {
 			Constants.barrier.await();
 		} catch (InterruptedException | BrokenBarrierException e) {
 			// TODO Auto-generated catch block
