@@ -54,6 +54,14 @@ public class Scheduler extends Thread {
 			Request request = pendingRequests.peekRequest(0);
 			if(request != null) worker.receiveRequest(pendingRequests.getRequest(request.getID())); // Entrega o próximo para ele
 		}
+		
+		try {
+			Thread.sleep(Constants.sleepLength);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		try {
 			Constants.barrier.await();
 		} catch (InterruptedException | BrokenBarrierException e) {
