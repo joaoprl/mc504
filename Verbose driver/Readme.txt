@@ -9,3 +9,4 @@ Files
 		arquivo fonte utilizado para gerar o psmouse.ko
 		para compilá-lo, deve ser substituído na pasta "'kernel'/drivers/input/mouse"
 			no meu caso "/usr/src/linux-3.13.0/drivers/input/mouse"
+		nas funções 'verbose' deve-se alterar as configurações da chamada aplay de acordo com a versão instalada
