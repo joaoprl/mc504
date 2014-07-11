@@ -1,6 +1,7 @@
 import java.awt.Point;
+import java.util.concurrent.BrokenBarrierException;
 
-public class BodyFactory {
+public class BodyFactory extends Thread {
 	Point position; // Posição da fábrica
 	Body [] inventory; // Estoque da fábrica
 	
@@ -19,7 +20,7 @@ public class BodyFactory {
 	 * Faz um pedido de um tipo específico de carcaça
 	 * @param type tipo da carcaça
 	 */
-	public void newRequest(int type)
+	public synchronized void newRequest(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] == null) inventory[i] = new Body(type, this.getInventoryPositon(i));
@@ -30,11 +31,11 @@ public class BodyFactory {
 	 * @param type Tipo de carcaça
 	 * @return Retorna true se tem a carcaça ou false caso contrário
 	 */
-	public boolean hasABody(int type)
+	public synchronized boolean hasABody(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
-				if(inventory[i].getType() == type) return true;
+				if(inventory[i].getType() == type && inventory[i].isReady()) return true;
 		return false;
 	}
 	
@@ -43,11 +44,11 @@ public class BodyFactory {
 	 * @param type Tipo da carcaça desejada
 	 * @return Carcaça do tipo desejado, se existente; null caso contrário
 	 */
-	public Body takeProduct(int type)
+	public synchronized Body takeProduct(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
-				if(inventory[i].getType() == type)
+				if(inventory[i].getType() == type && inventory[i].isReady())
 				{
 					Body body = inventory[i];
 					inventory[i] = null;
@@ -55,7 +56,6 @@ public class BodyFactory {
 				}
 		return null;
 	}
-	
 	
 	/**
 	 * Retorna a posição no cenário de um dado local do inventário
@@ -70,10 +70,20 @@ public class BodyFactory {
 	/**
 	 * Atualiza peças no inventário
 	 */
-	public void Update()
+	private void Update()
 	{
+		synchronized (this)
+		{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) inventory[i].Update();
+		}
+		
+		try {
+			Constants.barrier.await();
+		} catch (InterruptedException | BrokenBarrierException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -84,5 +94,11 @@ public class BodyFactory {
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) inventory[i].Draw(draw);
+	}
+	
+	public void run()
+	{
+		while (true)
+			Update();
 	}
 }

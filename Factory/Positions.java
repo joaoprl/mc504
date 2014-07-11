@@ -1,6 +1,6 @@
 import java.awt.Point;
 
-public class Positions {
+public abstract class Positions {
 	/**
 	 * Construtor privado, não criar classe (classe constante)
 	 */
@@ -63,6 +63,17 @@ public class Positions {
 		return new Point(6 + 8 * number + scheduler.x, scheduler.y);
 	}
 	
+	/**
+	 * Posição da lista de pedido de um dado local de trabalho
+	 * @param number Número do local de trablaho (iniciado por 0)
+	 * @return Retorna posição no cenário
+	 */
+	public static Point getWrokSiteRequestPosition(int number)
+	{
+		Point scheduler = getSchedulerPosition();
+		return new Point(7 + 8 * number + scheduler.x, scheduler.y + 3);
+	}
+		
 	/**
 	 * Posição da fábrica de carcaças
 	 * @return retorna posição da fábrica de carcaças

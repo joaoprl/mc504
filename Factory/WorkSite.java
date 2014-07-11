@@ -6,6 +6,7 @@ public class WorkSite {
 	Tire tire;
 	Engine engine;
 	int ID;
+	Request request;
 	
 	/**
 	 * Inicializa o workSite (todas as partes são null)
@@ -46,6 +47,15 @@ public class WorkSite {
 	}
 	
 	/**
+	 * Anexa pedido à prancheta do local de trabalho
+	 * @param request Peiddo a ser anexado
+	 */
+	public void setRequest(Request request)
+	{
+		this.request = request;
+	}
+	
+	/**
 	 * @return Se o carro tiver todas as partes, retorna true; caso contrário, false
 	 */
 	public boolean carIsComplete()
@@ -62,6 +72,7 @@ public class WorkSite {
 		this.body = null;
 		this.tire = null;
 		this.engine = null;
+		this.request = null;
 	}
 	
 	/**
@@ -75,14 +86,50 @@ public class WorkSite {
 	}
 	
 	/**
-	 * Imprime as partes de carro existentes no workSite
+	 * @return Se tem um motor no local de trabalho retorna true; false caso contrário
+	 */
+	public boolean hasAnEngine()
+	{
+		if(this.engine != null) return true;
+		return false;
+	}
+	
+	/**
+	 * @return Se tem um pneu no local de trabalho retorna true; false caso contrário
+	 */
+	public boolean hasATire()
+	{
+		if(this.tire != null) return true;
+		return false;
+	}
+	
+	/**
+	 * @return Se tem uma carcaça no local de trabalho retorna true; false caso contrário
+	 */
+	public boolean hasABody()
+	{
+		if(this.body != null) return true;
+		return false;
+	}
+	
+	/**
+	 * Imprime as partes de carro existentes no workSite (duas vezes as rodas)
 	 * @param draw Local para impressão
 	 */
 	public void Draw(Draw draw)
 	{
 		if(body != null) body.Draw(draw);
-		if(tire != null) tire.Draw(draw);
+		
+		if(tire != null) 
+		{
+			tire.Draw(draw);
+			tire.DrawSecondTire(draw);
+		}
+		
 		if(engine != null) engine.Draw(draw);
+		
+		// Imprime prancheta com pedido
+		if(request != null) draw.addPrint(Images.getLinearRequest(request.getBodyType(), request.getTireType(), request.getEngineType()), Positions.getWrokSiteRequestPosition(ID));
 	}
 
 }

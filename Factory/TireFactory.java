@@ -1,7 +1,7 @@
 import java.awt.Point;
+import java.util.concurrent.BrokenBarrierException;
 
-
-public class TireFactory {
+public class TireFactory extends Thread {
 	Point position; // Posição da fábrica
 	Tire [] inventory; // Estoque da fábrica
 	
@@ -20,7 +20,7 @@ public class TireFactory {
 	 * Faz um pedido de um tipo específico de pneu
 	 * @param type tipo da pneu
 	 */
-	public void newRequest(int type)
+	public synchronized void newRequest(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] == null) inventory[i] = new Tire(type, this.getInventoryPositon(i));
@@ -31,11 +31,11 @@ public class TireFactory {
 	 * @param type Tipo de pneu
 	 * @return Retorna true se tem a pneu ou false caso contrário
 	 */
-	public boolean hasATire(int type)
+	public synchronized boolean hasATire(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
-				if(inventory[i].getType() == type) return true;
+				if(inventory[i].getType() == type && inventory[i].isReady()) return true;
 		return false;
 	}
 	
@@ -44,11 +44,11 @@ public class TireFactory {
 	 * @param type Tipo do pneu desejado
 	 * @return Pneu do tipo desejado, se existente; null caso contrário
 	 */
-	public Tire takeProduct(int type)
+	public synchronized Tire takeProduct(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
-				if(inventory[i].getType() == type)
+				if(inventory[i].getType() == type && inventory[i].isReady())
 				{
 					Tire tire = inventory[i];
 					inventory[i] = null;
@@ -64,16 +64,26 @@ public class TireFactory {
 	 */
 	Point getInventoryPositon(int i)
 	{
-		return new Point(this.position.x + i%2, this.position.y + ((int)i/2));
+		return new Point(this.position.x + 2*(i%2), this.position.y + ((int)i/2));
 	}
 	
 	/**
 	 * Atualiza peças no inventário
 	 */
-	public void Update()
+	private void Update()
 	{
-		for(int i = 0; i < inventory.length; i++)
-			if(inventory[i] != null) inventory[i].Update();
+		synchronized (this)
+		{
+			for(int i = 0; i < inventory.length; i++)
+				if(inventory[i] != null) inventory[i].Update();
+		}
+		
+		try {
+			Constants.barrier.await();
+		} catch (InterruptedException | BrokenBarrierException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -85,5 +95,10 @@ public class TireFactory {
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) inventory[i].Draw(draw);
 	}
-
+	
+	public void run()
+	{
+		while (true)
+			Update();
+	}
 }

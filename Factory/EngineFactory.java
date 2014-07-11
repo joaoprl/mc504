@@ -1,6 +1,7 @@
 import java.awt.Point;
+import java.util.concurrent.BrokenBarrierException;
 
-public class EngineFactory {
+public class EngineFactory extends Thread {
 	Point position; // Posição da fábrica
 	Engine [] inventory; // Estoque da fábrica
 	
@@ -14,28 +15,28 @@ public class EngineFactory {
 		for(int i = 0; i < inventory.length; i++)
 			inventory[i] = null;
 	}
-	
-	/**
-	 * Faz um pedido de um tipo específico de motor
-	 * @param type tipo da motor
-	 */
-	public void newRequest(int type)
-	{
-		for(int i = 0; i < inventory.length; i++)
-			if(inventory[i] == null) inventory[i] = new Engine(type, this.getInventoryPositon(i));
-	}
-	
+
 	/**
 	 * Se a fábrica tem, no inventário um dado tipo de motor
 	 * @param type Tipo de motor
 	 * @return Retorna true se tem o motor, false caso contrário
 	 */
-	public boolean hasAEngine(int type)
+	public synchronized boolean hasAEngine(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
-				if(inventory[i].getType() == type) return true;
+				if(inventory[i].getType() == type && inventory[i].isReady()) return true;
 		return false;
+	}
+	
+	/**
+	 * Faz um pedido de um tipo específico de motor
+	 * @param type tipo da motor
+	 */
+	public synchronized void newRequest(int type)
+	{
+		for(int i = 0; i < inventory.length; i++)
+			if(inventory[i] == null) inventory[i] = new Engine(type, this.getInventoryPositon(i));
 	}
 	
 	/**
@@ -43,11 +44,11 @@ public class EngineFactory {
 	 * @param type Tipo do motor desejado
 	 * @return Motor do tipo desejado, se existente; null caso contrário
 	 */
-	public Engine takeProduct(int type)
+	public synchronized Engine takeProduct(int type)
 	{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) 
-				if(inventory[i].getType() == type)
+				if(inventory[i].getType() == type && inventory[i].isReady())
 				{
 					Engine engine = inventory[i];
 					inventory[i] = null;
@@ -63,16 +64,26 @@ public class EngineFactory {
 	 */
 	Point getInventoryPositon(int i)
 	{
-		return new Point(this.position.x + i%2, this.position.y + ((int)i/2));
+		return new Point(this.position.x + 2*(i%2), this.position.y + ((int)i/2));
 	}
 	
 	/**
 	 * Atualiza peças no inventário
 	 */
-	public void Update()
+	private void Update()
 	{
+		synchronized (this)
+		{
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) inventory[i].Update();
+		}
+		
+		try {
+			Constants.barrier.await();
+		} catch (InterruptedException | BrokenBarrierException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -84,5 +95,10 @@ public class EngineFactory {
 		for(int i = 0; i < inventory.length; i++)
 			if(inventory[i] != null) inventory[i].Draw(draw);
 	}
-
+	
+	public void run()
+	{
+		while (true)
+			Update();
+	}
 }

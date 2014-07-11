@@ -1,5 +1,5 @@
 
-public class Images {
+public abstract class Images {
 	/**
 	 * Construtor privado, não criar classe (classe constante)
 	 */
@@ -12,13 +12,35 @@ public class Images {
 	 */
 	public static String[][] getTireImage(int type) 
 	{
-		// TODO tipificar
-		String [][]str = new String[5][1];
-		str[0][0] = ".";
-		str[0][0] = "ͦ ";
-		str[0][0] = "°";
-		str[0][0] = "º";
-		str[0][0] = "o";
+		String [][]str;
+		if(type == 1)
+		{
+			str = new String[6][1];			
+			str[0][0] = ".";
+			str[1][0] = "°";
+			str[2][0] = "º";
+			str[3][0] = "o";
+			str[4][0] = "O";
+			str[5][0] = "ϴ";
+		}
+		else if(type == 2)
+		{
+			str = new String[5][1];			
+			str[0][0] = "Δ";
+			str[1][0] = "O";
+			str[2][0] = "o";
+			str[3][0] = "0";
+			str[4][0] = "ʘ";
+		}
+		else
+		{
+			str = new String[5][1];			
+			str[0][0] = ".";
+			str[1][0] = "°";
+			str[2][0] = "º";
+			str[3][0] = "o";
+			str[4][0] = "O";
+		}
 		return str;
 	}
 	
@@ -30,10 +52,29 @@ public class Images {
 	public static String[][] getEngineImage(int type) 
 	{
 		String [][]str = new String[3][1];
-		// TODO criar sequencia de construção e tipificar
-		str[0][0] = "1";
-		str[1][0] = "2";
-		str[2][0] = "¥";
+		if(type == 1)
+		{
+			str = new String[3][1];
+			str[0][0] = "N";
+			str[1][0] = "NJ";
+			str[2][0] = "Ǌ";
+		}
+		else if(type == 2)
+		{
+			str = new String[5][1];
+			str[0][0] = "d";
+			str[1][0] = "D";
+			str[2][0] = "Dz";
+			str[3][0] = "DZ";
+			str[4][0] = "Ǆ";			
+		}
+		else
+		{
+			str = new String[3][1];
+			str[0][0] = "i";
+			str[1][0] = "Y";
+			str[2][0] = "¥";
+		}
 		
 		return str;
 	}
@@ -46,17 +87,40 @@ public class Images {
 	public static String[][] getBodyImage(int type) 
 	{
 		String [][]str = new String[3][2];
-		
-		// TODO criar tipos diferentes
-		str[0][0] = "       ";
-		str[0][1] = "˪ --  ˩";
-		
-		str[1][0] = "_ ̅ ̅  _";
-		str[1][1] = "˪ --  ˩";
-		
-		str[2][0] = "_/̅ ̅ \\_";
-		str[2][1] = "˪ --  ˩";
-		
+		if(type == 1)
+		{
+			str[0][0] = "       ";
+			str[0][1] = "˪ __  ˩";
+			
+			str[1][0] = "_ ДД ʌ";
+			str[1][1] = "˪ __  ˩";
+			
+			str[2][0] = "_/ДД\\ʌ";
+			str[2][1] = "˪ __  ˩";
+			
+		}
+		else if(type == 2)
+		{
+			str[0][0] = "       ";
+			str[0][1] = "˪ --  ˩";
+			
+			str[1][0] = "_  |__";
+			str[1][1] = "˪ --  ˩";
+			
+			str[2][0] = "_ʎ |__";
+			str[2][1] = "˪ --  ˩";
+		}
+		else
+		{
+			str[0][0] = "       ";
+			str[0][1] = "˪ --  ˩";
+			
+			str[1][0] = "_ ΠΠ _";
+			str[1][1] = "˪ --  ˩";
+			
+			str[2][0] = "_/ΠΠ\\_";
+			str[2][1] = "˪ --  ˩";
+		}		
 		return str;
 	}
 	
@@ -129,13 +193,20 @@ public class Images {
 	 * @param engine digito do tipo de motor
 	 * @return Vetor de string Request contendo tudo isso
 	 */
-	public static String[] getRequest(int quest, int car, int tire, int engine)
+	public static String[] getRequest(int quest, int body, int tire, int engine)
 	{
 		String []str = new String[4]; // 4 linhas
 		str[0] = " " + quest  + " " + "|";
-		str[1] = " " + car    + " " + "|";
+		str[1] = " " + body   + " " + "|";
 		str[2] = " " + tire   + " " + "|";
 		str[3] = " " + engine + " " + "|";
+		return str;
+	}
+
+	public static String[] getLinearRequest(int body, int tire, int engine)
+	{
+		String []str = new String[1];
+		str[0] = new String(body + " " + tire + " " + engine + " ");
 		return str;
 	}
 }
